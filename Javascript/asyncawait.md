@@ -131,3 +131,61 @@ the values are:
 > continue2 is called
 > 10
 > 20
+
+## Using Promise.all()
+
+a better way to call it concurrently is to use `Promise.all()` instead of `await`
+
+Changing `main()` from:
+
+```js
+var main = async () => {
+    let value1 = continue1();
+    let value2 = continue2();
+
+    console.log(await value1);
+    console.log(await value2)
+}
+```
+
+to
+
+```js
+var main = async () => {
+    Promise.all([continue1(), continue2()]).then(message => {
+        console.log(message)
+    })
+}
+```
+
+will give the exact same result.
+
+> continue2 is called
+> continue1 is called
+> [ 10, 20 ]
+
+In which all `resolve` now are stored in `message`, which is an array.
+
+## Parallel with Promise.then()
+
+Notice that both `continue` functions are returning a promise.
+
+Thus we can use `.then()`
+
+changing main to:
+
+```js
+var main = async () => {
+    continue1().then(message => console.log(message));
+    continue2().then(message => console.log(message));
+}
+```
+
+Result:
+
+> continue2 is called
+> 20
+> continue1 is called
+> 10
+
+`message` is now act as `resolve`
